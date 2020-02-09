@@ -1,0 +1,32 @@
+h1 {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.calc-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(6, auto);
+    grid-gap: 10px;
+    width: 300px;
+    margin: 100px auto;
+    border: 1px solid black;
+}
+
+.calc-display {
+    grid-area: 1 / 1 / 2 / 5;
+    border-bottom: 1px solid black;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+}
+
+.calc-button {
+    text-align: center;
+    border: 1px solid black;
+    height: 50px;
+    line-height: 50px;
+}
+
+
