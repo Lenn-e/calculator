@@ -10,6 +10,9 @@ let numButtons = document.querySelectorAll('.calc-button-num');
 let operationButtons = document.querySelectorAll('.calc-button-operation');
 let evaluationButton = document.querySelector('.calc-button-evaluate');
 
+// switch to true after getting a result so that pressing num buttons doesn't concat but starts from a new value
+let resultFlag = false;
+
 function setDisplayText(text) {
     calcDisplay.textContent = text;
 }
@@ -43,6 +46,33 @@ function operate(operator, a, b) {
     }
 }
 
+function checkLongNumber(num) {
+    if(num.includes(".")) {
+        let numParts = num.split(".");
+        if(numParts[1].length > 4) {
+            num = Math.round((num + Number.EPSILON) * 10000) / 10000
+        }
+    }
+    if(num.length > 20) {
+        num = "You made a big boy number.";
+        disableAllButtons();
+    }
+
+    return num;
+}
+
+function disableAllButtons() {
+    document.querySelectorAll('.calc-button').forEach(button => {
+        button.style.pointerEvents = 'none';
+    });
+}
+
+function enableAllButtons() {
+    document.querySelectorAll('.calc-button').forEach(button => {
+        button.style.pointerEvents = 'auto';
+    });
+}
+
 // button callback functions
 function numButtonPress(event) {
     currentDisplayValue += event.target.textContent.trim();
@@ -61,12 +91,11 @@ function operationButtonPress(event) {
 }
 
 function evaluationButtonPress(event) {
-
-    let result = operate(currentOperator, Number(previousDisplayValue), Number(currentDisplayValue));
-    console.log(currentOperator)
-    console.log(previousDisplayValue)
-    console.log(currentDisplayValue)
-    console.log(result)
+    let result = String(operate(currentOperator, Number(previousDisplayValue), Number(currentDisplayValue)));
+    result = checkLongNumber(result);
+    setDisplayText(result);
+    currentDisplayValue = (result);
+    previousDisplayValue = '';
 }
 
 numButtons.forEach(button => {
