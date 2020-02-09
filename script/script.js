@@ -50,7 +50,7 @@ function checkLongNumber(num) {
     if(num.includes(".")) {
         let numParts = num.split(".");
         if(numParts[1].length > 4) {
-            num = Math.round((num + Number.EPSILON) * 10000) / 10000
+            num = Math.round((num + Number.EPSILON) * 100000) / 100000;
         }
     }
     if(num.length > 20) {
@@ -75,6 +75,10 @@ function enableAllButtons() {
 
 // button callback functions
 function numButtonPress(event) {
+    if(resultFlag) {
+        resultFlag = false;
+        currentDisplayValue = '';
+    }
     currentDisplayValue += event.target.textContent.trim();
     setDisplayText(currentDisplayValue);
 }
@@ -96,6 +100,7 @@ function evaluationButtonPress(event) {
     setDisplayText(result);
     currentDisplayValue = (result);
     previousDisplayValue = '';
+    resultFlag = true;
 }
 
 numButtons.forEach(button => {
