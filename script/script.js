@@ -53,11 +53,11 @@ function checkLongNumber(num) {
     if(num.includes(".")) {
         let numParts = num.split(".");
         if(numParts[1].length > 4) {
-            num = Math.round((num + Number.EPSILON) * 100000) / 100000;
+            num = Math.round(num * 100000) / 100000;
         }
     }
-    if(num.length > 20) {
-        num = "You made a big boy number.";
+    if(num.length > 12) {
+        num = "Num too big";
         disableAllButtons();
     }
 
@@ -68,6 +68,7 @@ function disableAllButtons() {
     document.querySelectorAll('.calc-button').forEach(button => {
         button.style.pointerEvents = 'none';
     });
+    clearButton.style.pointerEvents = 'auto';
 }
 
 function enableAllButtons() {
@@ -104,6 +105,9 @@ function numButtonPress(event) {
         currentDisplayValue = '';
     }
     currentDisplayValue += event.target.textContent.trim();
+    if(currentDisplayValue.length > 12){
+        currentDisplayValue = currentDisplayValue.slice(1);
+    }
     setDisplayText(currentDisplayValue);
 
     // if there are 2 values available we can enable the = button
