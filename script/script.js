@@ -9,6 +9,9 @@ let calcDisplay = document.querySelector('.calc-display');
 let numButtons = document.querySelectorAll('.calc-button-num');
 let operationButtons = document.querySelectorAll('.calc-button-operation');
 let evaluationButton = document.querySelector('.calc-button-evaluate');
+let clearButton = document.querySelector('.calc-button-clear');
+let dotButton = document.querySelector('.calc-button-dot');
+let backspaceButton = document.querySelector('.calc-button-backspace');
 
 // switch to true after getting a result so that pressing num buttons doesn't concat but starts from a new value
 let resultFlag = false;
@@ -73,7 +76,28 @@ function enableAllButtons() {
     });
 }
 
+function checkValuesExist() {
+    return currentDisplayValue != '' && previousDisplayValue != '';
+}
+
+function disableEvalButton() {
+    evaluationButton.style.pointerEvents = 'none';
+}
+
+function enableEvalButton() {
+    evaluationButton.style.pointerEvents = 'auto';
+}
+
 // button callback functions
+function clear() {
+    enableAllButtons();
+    disableEvalButton();
+    currentDisplayValue = '';
+    previousDisplayValue = '';
+    currentOperator = '';
+    setDisplayText('0');
+}
+
 function numButtonPress(event) {
     if(resultFlag) {
         resultFlag = false;
@@ -81,6 +105,11 @@ function numButtonPress(event) {
     }
     currentDisplayValue += event.target.textContent.trim();
     setDisplayText(currentDisplayValue);
+
+    // if there are 2 values available we can enable the = button
+    if(checkValuesExist()) {
+        enableEvalButton();
+    }
 }
 
 function operationButtonPress(event) {
@@ -90,17 +119,39 @@ function operationButtonPress(event) {
         previousDisplayValue = currentDisplayValue;
     }
     currentDisplayValue = '';
-
-    console.log(previousDisplayValue, currentDisplayValue)
 }
 
 function evaluationButtonPress(event) {
     let result = String(operate(currentOperator, Number(previousDisplayValue), Number(currentDisplayValue)));
+    // if the number is too long shorten it or display an error so it doesnt overflow
     result = checkLongNumber(result);
     setDisplayText(result);
     currentDisplayValue = (result);
     previousDisplayValue = '';
     resultFlag = true;
+    disableEvalButton();
+}
+
+function dotButtonPress() {
+    if(resultFlag) {
+        resultFlag = false;
+        currentDisplayValue = '';
+    }
+    if(currentDisplayValue.includes(".")) {
+        currentDisplayValue = currentDisplayValue.replace(".", "");
+    }
+    currentDisplayValue += ".";
+    setDisplayText(currentDisplayValue);
+}
+
+function backspace() {
+    if(resultFlag) {
+        resultFlag = false;
+        currentDisplayValue = '';
+    }
+    currentDisplayValue = currentDisplayValue.slice(0, -1);
+
+    setDisplayText(currentDisplayValue);
 }
 
 numButtons.forEach(button => {
@@ -113,5 +164,10 @@ operationButtons.forEach(button => {
 
 evaluationButton.addEventListener('click', evaluationButtonPress);
 
+clearButton.addEventListener('click', clear);
 
+dotButton.addEventListener('click', dotButtonPress);
 
+backspaceButton.addEventListener('click', backspace);
+
+disableEvalButton();
