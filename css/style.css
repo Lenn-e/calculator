@@ -24,7 +24,7 @@ h1 {
     grid-template-rows: repeat(6, auto);
     grid-gap: 10px;
     width: 300px;
-    margin: 10% auto;
+    margin: 8% auto;
     border: 1px solid black;
     border-radius: 5px;
     padding: 20px 15px;
